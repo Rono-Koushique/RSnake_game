@@ -9,7 +9,7 @@ rows = 20
 
 class cube(object):
     rows = 20
-    w = 500
+    w = width
     def __init__(self, start, dirnx=1, dirny=0, color=(46, 140, 212)):
         self.pos = start
         self.dirnx = 1
@@ -24,7 +24,19 @@ class cube(object):
     def draw(self, surface, eyes=False):
         dis = self.w//self.rows
         [i, j] = self.pos
-        pygame.draw.rect(surface, self.color, (i*dis, j*dis, dis, dis))
+        pygame.draw.rect(surface, self.color, (i*dis+1, j*dis+1, dis-1, dis-1))
+
+
+class circle(object):
+    def __init__(self, start, color=(46, 140, 212)):
+        self.pos = start
+        self.color = color
+
+    def draw(self, surface):
+        dis = width//rows
+        [i, j] = self.pos
+        pygame.draw.circle(surface, self.color, (i*dis+dis//2, j*dis+dis//2), dis//2.5)
+
 
 class Snake(object):
     body = []                                       # body has all the cube objects
@@ -140,10 +152,11 @@ def message_box(subject, content):
         pass
 
 def main():
+
     win = pygame.display.set_mode((width, width))
     pygame.display.set_caption("RSnake")
     snake = Snake((46, 140, 212), (10, 10))
-    snack = cube(randomSnack(snake), color= (227, 64, 50))
+    snack = circle(randomSnack(snake), color= (227, 64, 50))
     flag = True
     clock = pygame.time.Clock()
 
@@ -158,7 +171,7 @@ def main():
         snake.move()
         if snake.body[0].pos == snack.pos:
             snake.addCube()
-            snack = cube(randomSnack(snake), color=(227, 64, 50))
+            snack = circle(randomSnack(snake), color=(227, 64, 50))
 
         for x in range(len(snake.body)):
             if snake.body[x].pos in list(map(lambda z:z.pos, snake.body[x+1:])):
@@ -167,7 +180,7 @@ def main():
                 snake.reset((10,10))
                 break
 
-        print(snake.body[0].pos)
+        # print(snack.pos)
         redrawWindow(win, snake, snack)
 
 main()
